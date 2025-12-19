@@ -53,13 +53,14 @@ async function analyzeImage(imageUrl) {
 // Search Vinted via Lobstr.io
 async function searchVinted(query) {
   try {
+    console.log('Searching Vinted with:', query);
     const response = await axios.get('https://api.lobstr.io/v1/items/search', {
       params: { search_text: query },
       headers: { 'X-API-Key': LOBSTR_API_KEY },
-      timeout: 15000
+      timeout: 10000
     });
-
-    return (response.data.items || []).slice(0, 5).map(item => ({
+    console.log('Vinted response:', response.data);
+    return (response.data.items || []).slice(0, 3).map(item => ({
       title: item.title,
       price: item.price,
       image: item.photos?.[0]?.url || '',
@@ -68,7 +69,7 @@ async function searchVinted(query) {
       condition: item.status
     }));
   } catch (err) {
-    console.error('Vinted error:', err.message);
+    console.error('Vinted error:', err.message, err.response?.data);
     return [];
   }
 }
